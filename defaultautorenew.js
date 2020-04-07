@@ -28,6 +28,7 @@ CRM.$(function($) {
     }
     else {
       ar.prop('disabled', false);
+      click_membership_type();
     }
   }
 

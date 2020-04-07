@@ -135,9 +135,11 @@ function defaultautorenew_civicrm_entityTypes(&$entityTypes) {
 }
 
 function defaultautorenew_civicrm_buildForm($formName, &$form) {
-  if ($formName == 'CRM_Contribute_Form_Contribution_Main' && !empty($form->_values['is_recur'])) {
-    $defaults['is_recur'] = TRUE;
-    $form->setDefaults($defaults);
+  if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
+    if (!empty($form->_values['is_recur'])) {
+      $defaults['is_recur'] = TRUE;
+      $form->setDefaults($defaults);
+    }
 
     $ids = [];
     $auto = json_decode($form->get_template_vars('autoRenewMembershipTypeOptions'));

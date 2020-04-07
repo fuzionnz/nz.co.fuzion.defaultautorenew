@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <extension key="nz.co.fuzion.defaultautorenew" type="module">
   <file>defaultautorenew</file>
-  <name>FIXME</name>
+  <name>Make Auto-renew the default option</name>
   <description>FIXME</description>
   <license>AGPL-3.0</license>
   <maintainer>
