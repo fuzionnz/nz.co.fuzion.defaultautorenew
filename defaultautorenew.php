@@ -143,9 +143,9 @@ function defaultautorenew_civicrm_buildForm($formName, &$form) {
 
     $ids = [];
     $auto = json_decode($form->get_template_vars('autoRenewMembershipTypeOptions'));
-    foreach($auto as $key => $on) {
+    foreach((array) $auto as $key => $on) {
       if ($on) {
-        list($ignore, $id) = explode('_', $key);
+        list(, $id) = explode('_', $key);
         $ids[] = $id;
       }
     }
