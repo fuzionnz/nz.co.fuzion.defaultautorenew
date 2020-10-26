@@ -1,8 +1,7 @@
 # nz.co.fuzion.defaultautorenew
 
-![Screenshot](/images/screenshot.png)
-
-(*FIXME: In one or two paragraphs, describe what the extension does and why one would download it. *)
+- Enables auto renew by default on the contribution page.
+- Disables auto-renew if pay later is selected.
 
 The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
