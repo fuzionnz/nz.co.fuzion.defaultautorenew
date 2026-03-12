@@ -150,7 +150,7 @@ function defaultautorenew_civicrm_buildForm($formName, &$form) {
       foreach ((array) $auto as $key => $on) {
         if ($on) {
           [, $id] = explode('_', $key);
-          $ids[] = $id;
+          $ids[] = (int) $id;
         }
       }
     }
