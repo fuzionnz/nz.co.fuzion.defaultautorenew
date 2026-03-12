@@ -20,6 +20,9 @@
     <ver>6.0</ver>
   </compatibility>
   <comments>Compatible with CiviCRM 5.x, 6.x and PHP 8.1+</comments>
+  <mixins>
+    <mixin>smarty-v2@1.0.0</mixin>
+  </mixins>
   <civix>
     <namespace>CRM/Defaultautorenew</namespace>
   </civix>

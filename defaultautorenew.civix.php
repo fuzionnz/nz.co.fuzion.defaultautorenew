@@ -96,11 +96,9 @@ function _defaultautorenew_civix_civicrm_config(&$config = NULL) {
   $extRoot = dirname(__FILE__) . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
 
-  if (is_array($template->template_dir)) {
-    array_unshift($template->template_dir, $extDir);
-  }
-  else {
-    $template->template_dir = array($extDir, $template->template_dir);
+  // Use addTemplateDir() for Smarty 5 compatibility (direct property access removed in Smarty 5).
+  if (is_dir($extDir)) {
+    $template->addTemplateDir($extDir);
   }
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();

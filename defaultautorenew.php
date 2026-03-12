@@ -143,7 +143,8 @@ function defaultautorenew_civicrm_buildForm($formName, &$form) {
     $ids = [];
     // Use CRM_Core_Smarty::singleton() for compatibility with CiviCRM 5.x/6.x.
     // $form->get_template_vars() was removed; template vars are on the Smarty singleton.
-    $autoRenewOptions = CRM_Core_Smarty::singleton()->get_template_vars('autoRenewMembershipTypeOptions');
+    // Use getTemplateVars() (camelCase) for Smarty 5 compatibility — get_template_vars() was removed in Smarty 5.
+    $autoRenewOptions = CRM_Core_Smarty::singleton()->getTemplateVars('autoRenewMembershipTypeOptions');
     if (!empty($autoRenewOptions)) {
       $auto = is_string($autoRenewOptions) ? json_decode($autoRenewOptions) : (object) $autoRenewOptions;
       foreach ((array) $auto as $key => $on) {
