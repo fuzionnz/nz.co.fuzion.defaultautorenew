@@ -2,7 +2,7 @@
 CRM.$(function($) {
 
   click_membership_type = function(evt) {
-    var ct, type, data, pfv;
+    var ct, type, data, pfv, dataStr;
 
     if (evt) {
       ct = $(evt.target);
@@ -10,11 +10,22 @@ CRM.$(function($) {
     else {
       ct = $('[data-price-field-values]:checked');
     }
-    if (!ct) {
+    if (!ct || !ct.length) {
       return;
     }
 
-    eval('data = ' + ct.attr('data-price-field-values'));
+    // Replaced eval() with JSON.parse() for security and CSP compatibility.
+    dataStr = ct.attr('data-price-field-values');
+    if (!dataStr) {
+      return;
+    }
+    try {
+      data = JSON.parse(dataStr);
+    }
+    catch (e) {
+      return;
+    }
+
     pfv = data[ct.val()];
     if (pfv) {
       $('#auto_renew').prop('checked', CRM.autoRenewIds.indexOf(pfv.membership_type_id) != -1);

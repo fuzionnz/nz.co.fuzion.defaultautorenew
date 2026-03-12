@@ -137,24 +137,26 @@ function defaultautorenew_civicrm_entityTypes(&$entityTypes) {
 function defaultautorenew_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
     if (!empty($form->_values['is_recur'])) {
-      $defaults['is_recur'] = TRUE;
-      $form->setDefaults($defaults);
+      $form->setDefaults(['is_recur' => TRUE]);
     }
 
     $ids = [];
-    $auto = json_decode($form->get_template_vars('autoRenewMembershipTypeOptions'));
-    foreach((array) $auto as $key => $on) {
-      if ($on) {
-        list(, $id) = explode('_', $key);
-        $ids[] = $id;
+    // Use CRM_Core_Smarty::singleton() for compatibility with CiviCRM 5.x/6.x.
+    // $form->get_template_vars() was removed; template vars are on the Smarty singleton.
+    $autoRenewOptions = CRM_Core_Smarty::singleton()->get_template_vars('autoRenewMembershipTypeOptions');
+    if (!empty($autoRenewOptions)) {
+      $auto = is_string($autoRenewOptions) ? json_decode($autoRenewOptions) : (object) $autoRenewOptions;
+      foreach ((array) $auto as $key => $on) {
+        if ($on) {
+          [, $id] = explode('_', $key);
+          $ids[] = $id;
+        }
       }
     }
 
     if (!empty($ids)) {
       $manager = CRM_Core_Resources::singleton();
-      $manager->addSetting(array(
-        'autoRenewIds' => $ids,
-      ));
+      $manager->addSetting(['autoRenewIds' => $ids]);
       $manager->addScriptFile('nz.co.fuzion.defaultautorenew', 'defaultautorenew.js');
     }
   }
