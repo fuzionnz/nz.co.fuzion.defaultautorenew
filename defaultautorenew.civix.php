@@ -96,12 +96,9 @@ function _defaultautorenew_civix_civicrm_config(&$config = NULL) {
   $extRoot = dirname(__FILE__) . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
 
-  if (is_array($template->template_dir)) {
-    array_unshift($template->template_dir, $extDir);
-  }
-  else {
-    $template->template_dir = array($extDir, $template->template_dir);
-  }
+  $dirs = (array) $template->getTemplateDir();
+  array_unshift($dirs, $extDir);
+  $template->setTemplateDir($dirs);
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
   set_include_path($include_path);
