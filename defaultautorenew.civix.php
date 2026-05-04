@@ -196,7 +196,7 @@ function _defaultautorenew_civix_civicrm_disable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function _defaultautorenew_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+function _defaultautorenew_civix_civicrm_upgrade($op, ?CRM_Queue_Queue $queue = NULL) {
   if ($upgrader = _defaultautorenew_civix_upgrader()) {
     return $upgrader->onUpgrade($op, $queue);
   }
