@@ -96,11 +96,9 @@ function _defaultautorenew_civix_civicrm_config(&$config = NULL) {
   $extRoot = dirname(__FILE__) . DIRECTORY_SEPARATOR;
   $extDir = $extRoot . 'templates';
 
-  if (is_array($template->template_dir)) {
-    array_unshift($template->template_dir, $extDir);
-  }
-  else {
-    $template->template_dir = array($extDir, $template->template_dir);
+  // Use addTemplateDir() for Smarty 5 compatibility (direct property access removed in Smarty 5).
+  if (is_dir($extDir)) {
+    $template->addTemplateDir($extDir);
   }
 
   $include_path = $extRoot . PATH_SEPARATOR . get_include_path();
@@ -198,7 +196,7 @@ function _defaultautorenew_civix_civicrm_disable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function _defaultautorenew_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+function _defaultautorenew_civix_civicrm_upgrade($op, ?CRM_Queue_Queue $queue = NULL) {
   if ($upgrader = _defaultautorenew_civix_upgrader()) {
     return $upgrader->onUpgrade($op, $queue);
   }
@@ -243,7 +241,7 @@ function _defaultautorenew_civix_find_files($dir, $pattern) {
     if ($dh = opendir($subdir)) {
       while (FALSE !== ($entry = readdir($dh))) {
         $path = $subdir . DIRECTORY_SEPARATOR . $entry;
-        if ($entry{0} == '.') {
+        if ($entry[0] == '.') {
         }
         elseif (is_dir($path)) {
           $todos[] = $path;
@@ -295,8 +293,7 @@ function _defaultautorenew_civix_civicrm_caseTypes(&$caseTypes) {
     $name = preg_replace('/\.xml$/', '', basename($file));
     if ($name != CRM_Case_XMLProcessor::mungeCaseType($name)) {
       $errorMessage = sprintf("Case-type file name is malformed (%s vs %s)", $name, CRM_Case_XMLProcessor::mungeCaseType($name));
-      CRM_Core_Error::fatal($errorMessage);
-      // throw new CRM_Core_Exception($errorMessage);
+      throw new CRM_Core_Exception($errorMessage);
     }
     $caseTypes[$name] = array(
       'module' => E::LONG_NAME,

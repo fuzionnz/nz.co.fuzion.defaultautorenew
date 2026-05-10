@@ -71,7 +71,7 @@ function defaultautorenew_civicrm_disable() {
  *
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_upgrade
  */
-function defaultautorenew_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
+function defaultautorenew_civicrm_upgrade($op, ?CRM_Queue_Queue $queue = NULL) {
   return _defaultautorenew_civix_civicrm_upgrade($op, $queue);
 }
 
@@ -137,24 +137,27 @@ function defaultautorenew_civicrm_entityTypes(&$entityTypes) {
 function defaultautorenew_civicrm_buildForm($formName, &$form) {
   if ($formName == 'CRM_Contribute_Form_Contribution_Main') {
     if (!empty($form->_values['is_recur'])) {
-      $defaults['is_recur'] = TRUE;
-      $form->setDefaults($defaults);
+      $form->setDefaults(['is_recur' => TRUE]);
     }
 
     $ids = [];
-    $auto = json_decode($form->get_template_vars('autoRenewMembershipTypeOptions'));
-    foreach((array) $auto as $key => $on) {
-      if ($on) {
-        list(, $id) = explode('_', $key);
-        $ids[] = $id;
+    // Use CRM_Core_Smarty::singleton() for compatibility with CiviCRM 5.x/6.x.
+    // $form->get_template_vars() was removed; template vars are on the Smarty singleton.
+    // Use getTemplateVars() (camelCase) for Smarty 5 compatibility — get_template_vars() was removed in Smarty 5.
+    $autoRenewOptions = CRM_Core_Smarty::singleton()->getTemplateVars('autoRenewMembershipTypeOptions');
+    if (!empty($autoRenewOptions)) {
+      $auto = is_string($autoRenewOptions) ? json_decode($autoRenewOptions) : (object) $autoRenewOptions;
+      foreach ((array) $auto as $key => $on) {
+        if ($on) {
+          [, $id] = explode('_', $key);
+          $ids[] = (int) $id;
+        }
       }
     }
 
     if (!empty($ids)) {
       $manager = CRM_Core_Resources::singleton();
-      $manager->addSetting(array(
-        'autoRenewIds' => $ids,
-      ));
+      $manager->addSetting(['autoRenewIds' => $ids]);
       $manager->addScriptFile('nz.co.fuzion.defaultautorenew', 'defaultautorenew.js');
     }
   }
